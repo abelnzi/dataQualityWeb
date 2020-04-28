@@ -51,7 +51,7 @@ const Content = () => {
                     {console.log("==========Content orgUnit============== :"+orgUnit)}
                     <HashRouter >
                         <Switch>
-                            <Route path="/admin"  Component={Admin} /> 
+                            <Route path="/admin"  render={(props)=><Admin {...props} setOrgunit={orgUnitSet} setPeriod={periodSet} handleSubmit={handleSubmit} /> }/> 
                             <Route path="/dashboard"  render={(props)=><Dashboard {...props} setOrgunit={orgUnitSet} setPeriod={periodSet} handleSubmit={handleSubmit} /> } />
                             <Route  path="/charts"  render={(props)=><Charts {...props} orgUnit={orgUnit}  period={period} redirect={redirect} /> } />
                         </Switch>                   

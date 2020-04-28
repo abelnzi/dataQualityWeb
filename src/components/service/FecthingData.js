@@ -3,7 +3,7 @@ import TextData from '../data/TextData.json'
 import InitialOrgunits from '../data/InitialOrgunits'
 import OrgUnitName from '../data/OrgUnitName.json'
 
-const  baseUrl = "https://dhis2.jsi.com/dhis" 
+export const  baseUrl = "https://dhis2.jsi.com/dhis" 
 
 export const postData = async (endpoint, data) =>
     await (await fetch(endpoint, {

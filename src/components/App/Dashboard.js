@@ -7,7 +7,6 @@ import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
 import Typography from '@material-ui/core/Typography';
 import { Redirect } from 'react-router-dom';
-import SelectIndicators from './SelectIndicators'
 
 
 const useStyles = makeStyles(theme => ({
@@ -69,13 +68,7 @@ const Dashboard = (props) => {
                     <Grid item xs={2}>
                         <strong>Period</strong> <DatePicker setPeriod={setPeriod} />
                     </Grid>
-                    <Grid item xs={1}>                       
-                    </Grid>
-                    <Grid item xs={2}>
-                        <SelectIndicators />
-                    </Grid>
-                    <Grid item xs={1}>                       
-                    </Grid>
+                    
                     <Grid item xs={2}>
                         <Button
                             variant="contained"
