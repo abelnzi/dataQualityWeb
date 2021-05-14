@@ -8,16 +8,24 @@ import {
 
 export default function MaterialUIPickers(props) {
   // The first commit of Material-UI
-  const [selectedDate, setSelectedDate] = React.useState(new Date());
+  const [selectedDate, setSelectedDate] = React.useState(null);
+
+  const getYYYYMM = (date)=>{
+    date=(date==null)?new Date():date;
+    var year = date.getFullYear();
+    var month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : ('0' + month);
+    return (year+month)
+  }
 
   const handleDateChange = date => {
     setSelectedDate(date);
-    props.setPeriod(date)
+    props.setPeriod(getYYYYMM(date))
     //console.log(selectedDate)
   };
 
   useEffect(() => {
-    handleDateChange(selectedDate)
+    //handleDateChange(selectedDate)
   });
 
   return (
@@ -25,7 +33,7 @@ export default function MaterialUIPickers(props) {
         <KeyboardDatePicker
           margin="normal"
           id="date-picker-dialog"
-          //label="Period"
+          label="Period"
           format="yyyy/MM"
           value={selectedDate}
           onChange={handleDateChange}

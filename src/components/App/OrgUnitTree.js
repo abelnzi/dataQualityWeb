@@ -5,10 +5,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import InitialOrgunits from '../data/InitialOrgunits'
-
-//const data = InitialOrgunits.organisationUnits[0]
-
-const API_ENDPOINT='https://dhis2.jsi.com/dhis/api/29/organisationUnits.json?userDataViewFallback=true&fields=id,displayName,level,children[displayName,level,id,children[displayName,level,id]]&paging=false'
+import {getData} from '../service/FecthingData'
 
 
 const useStyles = makeStyles({
@@ -27,23 +24,59 @@ export default function RecursiveTreeView(props) {
   const [selected, setSelected] = React.useState([]);
   const [data, setData] = React.useState([]);
 
-   async function fetchData() {
-    await (await fetch(API_ENDPOINT, {
-              method: 'GET',
-              credentials: 'include',
-              headers: {
-                  Accept: 'application/json',
-              },
-          })).json()
-            .then(res => setData(res.organisationUnits[0]))
-            .catch(err =>console.log("err :"+err));
+   async function getOrgUnit() {
+      var endpoint="organisationUnits.json?userDataViewFallback=true&fields=id,displayName,level,children[displayName,level,id,children[displayName,level,id,children[displayName,level,id]]]&paging=false"
+      var response = await getData(endpoint)
+      if (response.status === 'ERROR') {
+          console.error(response.message)
+          return
+      }
+      console.info("=====organisation======",response.data.organisationUnits)
+      return response.data.organisationUnits[0]
+    
   } 
 
+  const getOrgUnitTree = async () => {
+    var endpoint1='me?fields=organisationUnits'
+    console.log("===========endpoint1=========="+endpoint1)
+    const me = await getData(endpoint1)
+    //await console.log("===========me.data==========",JSON.stringify(me.data))
+    const rootIds = me.data.organisationUnits.map(ou => ou.id)
+
+    var endpoint2='organisationUnits.json?paging=false&fields=id,level,displayName,path,children'
+    const response = await getData(endpoint2)
+    console.log("===========je suis la==========")
+    const allOrgUnits = response.data.organisationUnits.filter(ou =>
+        rootIds.some(r => ou.path.includes(r))
+    )
+
+    const tree = allOrgUnits.filter(ou => rootIds.some(r => ou.id === r))
+
+    tree.forEach(root => {
+        const setChildren = parent => {
+            parent.children = allOrgUnits.filter(ou =>
+                parent.children.some(c => c.id === ou.id)
+            )
+            parent.children.forEach(c => setChildren(c))
+        }
+        setChildren(root)
+    })
+
+    return tree[0]
+}
+
   useEffect(() => {
+    async function load() {
+      setData(await getOrgUnit())        
+    }   
+    load()
+  },[])
+
+  /* useEffect(() => {
     //fetchData();
     //console.log('Data '+ data)
     setData(InitialOrgunits.organisationUnits[0])
-  }); 
+  });  */
 
   const handleToggle = (event, nodeIds) => {
     setExpanded(nodeIds);
@@ -58,7 +91,7 @@ export default function RecursiveTreeView(props) {
   };
 
   const renderTree = nodes => (
-      <TreeItem key={nodes.id} nodeId={nodes.id} label={nodes.displayName}>
+      <TreeItem key={nodes.id} nodeId={nodes.id+"-"+nodes.level} label={nodes.displayName}>
         {Array.isArray(nodes.children) ? nodes.children.map(node => renderTree(node)) : null}
       </TreeItem>
   );

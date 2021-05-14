@@ -5,20 +5,33 @@ import { HeaderBar } from '@dhis2/ui-widgets'
 import { Main } from '../Main'
 import 'typeface-roboto'
 import './style.css'
+import { number, string } from 'prop-types'
+import { createGlobalStyle } from 'styled-components'
 import Content from './Content'
 
-const config = {
-    baseUrl: process.env.REACT_APP_DHIS2_BASE_URL,
-    apiVersion: process.env.REACT_APP_DHIS2_API_VERSION,
-}
+import { Header} from '../Header'
+import 'typeface-roboto'
 
-export const App = ({ appName }) => (
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-    <Provider config={config}>
+const BodyStyle = createGlobalStyle`
+    body {
+        margin: 0;
+        background-color: rgba(0,0,10,.05);
+    }
+`
+
+export const App = ({ baseUrl, appName, apiVersion }) => (
+    <>
+        <BodyStyle />
         <CssReset />
-        <HeaderBar appName={appName} />
-        {/* <Main /> */}
+        <Header baseUrl={baseUrl} appName={appName} apiVersion={apiVersion} />
         <Content />
-    </Provider>
-    
+    </>
 )
+
+App.propTypes = {
+    baseUrl: string.isRequired,
+    appName: string.isRequired,
+    apiVersion: number.isRequired,
+}

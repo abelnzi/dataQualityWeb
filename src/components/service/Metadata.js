@@ -1,7 +1,7 @@
-import {baseUrl,getData} from './FecthingData'
+import {getData} from './FecthingData'
 
 const init=async()=>{
-    var endpoint=baseUrl+"/api/dataStore/qualitydashboard/settings"
+    var endpoint="dataStore/qualitydashboard/settings"
     var resp=await getData(endpoint)
       if (resp.status === 'ERROR') {
         console.error(resp.message)

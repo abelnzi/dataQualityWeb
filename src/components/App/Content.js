@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import {HashRouter,Switch,Route } from 'react-router-dom'
+import { HashRouter, Switch, Route, Redirect } from 'react-router-dom'
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Admin from './Admin'
 import Navbar from './Navbar'
 import Dashboard from './Dashboard'
-import Charts from './Charts'
+import GraphsData from './GraphsData'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
 
 const useStyles = makeStyles((theme) => ({
     root: {
-      flexGrow: 1,
+        flexGrow: 1,
     },
     paper: {
-      padding: theme.spacing(1),
-      textAlign: 'center',
-      color: theme.palette.text.secondary,
+        padding: theme.spacing(1),
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
     },
-  }));
+}));
 
 const Content = () => {
     const classes = useStyles();
@@ -30,37 +33,39 @@ const Content = () => {
     }
     const orgUnitSet = (orgUnit) => {
         setOrgUnit(orgUnit)
-        console.log("==========Content orgUnit============== :"+orgUnit)
+        console.log("==========Content orgUnit============== :" + orgUnit)
     }
     const periodSet = (period) => {
         setPeriod(period)
-        //console.log("==========Content period============== :"+period)
+        console.log("==========Content period============== :" + period)
     }
-    const redirectSet = (redirect) => {
+    /* const redirectSet = (redirect) => {
         setRedirect(redirect)
-    }
+    } */
 
     return (
-        <div className={classes.root}>
-            <Grid container spacing={3}>
-                <Grid item xs={12}  >
-                    <Paper className={classes.paper}> <Navbar /></Paper>
-                </Grid>         
-                <Grid item xs={12} spacing={2}>
-
-                    {console.log("==========Content orgUnit============== :"+orgUnit)}
+        <Container fluid="true">
+            <Row>
+                <Col><Navbar /></Col>
+            </Row>
+            <Row>
+                <Col>
+                    {/* {console.log("==========Content orgUnit============== :"+orgUnit)} */}
                     <HashRouter >
                         <Switch>
-                            <Route path="/admin"  render={(props)=><Admin {...props} setOrgunit={orgUnitSet} setPeriod={periodSet} handleSubmit={handleSubmit} /> }/> 
-                            <Route path="/dashboard"  render={(props)=><Dashboard {...props} setOrgunit={orgUnitSet} setPeriod={periodSet} handleSubmit={handleSubmit} /> } />
-                            <Route  path="/charts"  render={(props)=><Charts {...props} orgUnit={orgUnit}  period={period} redirect={redirect} /> } />
-                        </Switch>                   
+                            <Route exact path="/" render={() => (
+                                <Redirect to="/dashboard" />
+                            )} />
+                            <Route path="/admin" render={(props) => <Admin {...props} setOrgunit={orgUnitSet} setPeriod={periodSet} handleSubmit={handleSubmit} />} />
+                            <Route path="/dashboard" render={(props) => <Dashboard {...props} setOrgunit={orgUnitSet} setPeriod={periodSet} handleSubmit={handleSubmit} />} />
+                            <Route path="/graphsData" render={(props) => <GraphsData {...props} orgUnit={orgUnit} period={period} redirect={redirect} />} />
+                        </Switch>
                     </HashRouter>
-                </Grid>
-                    
-            </Grid>
-        </div>
-      );
+                </Col>
+            </Row>
+
+        </Container>
+    );
 }
- 
+
 export default Content;
